@@ -1,0 +1,19 @@
+// protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/echo.proto
+syntax = "proto3";
+
+package file;
+
+option go_package = "github.com/nomuyoshi/grpc-samples/download/proto";
+
+message FileRequest {
+  string name = 1;
+}
+
+message FileResponse {
+  bytes data = 1;
+}
+
+service FileService {
+  rpc Download(FileRequest)
+      returns (stream FileResponse); // stream をつけるとサーバーは複数のレスポンスを返す
+}
