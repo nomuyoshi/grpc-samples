@@ -54,6 +54,7 @@ func main() {
 		})
 	}
 
+	// 最後のリクエストをサーバーに通知
 	res, err := stream.CloseAndRecv()
 	log.Printf("done %d bytes\n", res.GetSize())
 }
