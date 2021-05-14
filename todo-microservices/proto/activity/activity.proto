@@ -1,0 +1,45 @@
+syntax = "proto3";
+package activity;
+option go_package = "github.com/nomuyoshi/grpc-samples/todo-microservices/proto/activity";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+// 他のprotoファイルをimportできる
+import "proto/task/task.proto";
+
+message Activity {
+  uint64 id = 1;
+  google.protobuf.Any content = 2;
+  uint64 user_id = 3;
+  google.protobuf.Timestamp created_at = 4;
+}
+
+message CreateTaskContent {
+  uint64 task_id = 1;
+  string task_name = 2;
+}
+
+message UpdateTaskStatusContent {
+  uint64 task_id = 1;
+  string task_name = 2;
+  task.Status task_status = 3;
+}
+
+message CreateProjectContent {
+  uint64 project_id = 1;
+  string project_name = 2;
+}
+
+message CreateActivityRequest {
+  google.protobuf.Any content = 1;
+}
+
+message FindActivitiesResponse {
+  repeated Activity activities = 1;
+}
+
+service ActivityService {
+  rpc CreateActivity (CreateActivityRequest) returns (google.protobuf.Empty);
+  rpc FindActivities (google.protobuf.Empty) returns (FindActivitiesResponse);
+}
