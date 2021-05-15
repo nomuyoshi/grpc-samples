@@ -6,7 +6,7 @@ import (
 )
 
 func ConnectDB() *gorm.DB {
-	dsn := "root:@tcp(127.0.0.1:3306)/grpc_todo?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:pass@tcp(db:3306)/grpc_todo?charset=utf8mb4&parseTime=True&loc=Local"
 	gormDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)

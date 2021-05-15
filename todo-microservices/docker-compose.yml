@@ -1,0 +1,28 @@
+version: "3"
+services:
+  task:
+    build:
+      context: .
+      dockerfile: task/Dockerfile
+    image: grpc-todo/task
+    container_name: task
+    ports:
+      - "50051:50052"
+    environment: 
+      - "PROJECT_SERVICE_ADDR=project:50051"
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0.24
+    container_name: grpc-todo-db
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: grpc_todo
+    ports:
+      - "3306:3306"
+    volumes:
+      - db:/var/lib/mysql
+
+volumes:
+  db:
