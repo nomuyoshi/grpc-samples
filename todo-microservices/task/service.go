@@ -47,21 +47,6 @@ func (s *TaskService) FindTasks(ctx context.Context, _ *emptypb.Empty) (*pbTask.
 	return &pbTask.FindTasksResponse{Tasks: pbTasks}, nil
 }
 
-func buildPbTask(t *taskDomain.Task) *pbTask.Task {
-	createdAt, _ := ptypes.TimestampProto(t.CreatedAt)
-	updatedAt, _ := ptypes.TimestampProto(t.UpdatedAt)
-
-	return &pbTask.Task{
-		Id:        t.ID,
-		Name:      t.Name,
-		Status:    t.Status,
-		ProjectId: t.ProjectID,
-		UserId:    t.UserID,
-		CreatedAt: createdAt,
-		UpdatedAt: updatedAt,
-	}
-}
-
 func (s *TaskService) FindProjectTasks(
 	ctx context.Context,
 	req *pbTask.FindProjectTasksRequest,
@@ -106,4 +91,19 @@ func (s *TaskService) UpdateTask(
 	repo.Save(task)
 
 	return &pbTask.UpdateTaskResponse{Task: buildPbTask(task)}, nil
+}
+
+func buildPbTask(t *taskDomain.Task) *pbTask.Task {
+	createdAt, _ := ptypes.TimestampProto(t.CreatedAt)
+	updatedAt, _ := ptypes.TimestampProto(t.UpdatedAt)
+
+	return &pbTask.Task{
+		Id:        t.ID,
+		Name:      t.Name,
+		Status:    t.Status,
+		ProjectId: t.ProjectID,
+		UserId:    t.UserID,
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	}
 }
