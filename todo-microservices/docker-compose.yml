@@ -1,5 +1,17 @@
 version: "3"
 services:
+  user:
+    build:
+      context: .
+      dockerfile: user/Dockerfile
+    image: grpc-todo/user
+    container_name: user
+    ports:
+      - "50051:50051"
+    environment: 
+      - "PROJECT_SERVICE_ADDR=project:50051"
+    depends_on:
+      - db
   task:
     build:
       context: .
@@ -7,9 +19,19 @@ services:
     image: grpc-todo/task
     container_name: task
     ports:
-      - "50051:50052"
+      - "50052:50051"
     environment: 
       - "PROJECT_SERVICE_ADDR=project:50051"
+    depends_on:
+      - db
+  project:
+    build:
+      context: .
+      dockerfile: project/Dockerfile
+    image: grpc-todo/project
+    container_name: project
+    ports:
+      - "50053:50051"
     depends_on:
       - db
   db:

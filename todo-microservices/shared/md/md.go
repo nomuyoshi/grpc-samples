@@ -40,3 +40,7 @@ func safeGetUserIDFromContext(ctx context.Context) (uint64, error) {
 
 	return userID, nil
 }
+
+func AddUserIDToContext(ctx context.Context, userID uint64) context.Context {
+	return metadata.AppendToOutgoingContext(ctx, metadataKeyUserID, strconv.FormatUint(userID, 10))
+}
