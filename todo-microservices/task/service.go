@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 )
 
@@ -94,8 +95,13 @@ func (s *TaskService) UpdateTask(
 }
 
 func buildPbTask(t *taskDomain.Task) *pbTask.Task {
-	createdAt, _ := ptypes.TimestampProto(t.CreatedAt)
-	updatedAt, _ := ptypes.TimestampProto(t.UpdatedAt)
+	var createdAt, updatedAt *timestamppb.Timestamp
+	if t.CreatedAt != nil {
+		createdAt, _ = ptypes.TimestampProto(*t.CreatedAt)
+	}
+	if t.UpdatedAt != nil {
+		updatedAt, _ = ptypes.TimestampProto(*t.UpdatedAt)
+	}
 
 	return &pbTask.Task{
 		Id:        t.ID,

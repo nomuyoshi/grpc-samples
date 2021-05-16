@@ -13,8 +13,8 @@ type Task struct {
 	Status    pb.Status
 	ProjectID uint64
 	UserID    uint64
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
 }
 
 func NewTask(name string, userID, projectID uint64) *Task {
