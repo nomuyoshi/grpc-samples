@@ -5,8 +5,6 @@ import (
 	pb "todo/proto/task"
 )
 
-type StatusType int32
-
 type Task struct {
 	ID        uint64 `gorm:"primaryKey"`
 	Name      string
