@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"todo/front/handler"
+	"todo/front/interceptor"
 	"todo/front/middleware"
 	"todo/front/session"
 	pbProject "todo/proto/project"
@@ -13,15 +14,28 @@ import (
 	pbUser "todo/proto/user"
 
 	"github.com/gorilla/mux"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"google.golang.org/grpc"
 )
 
 const port = ":8080"
 
 func main() {
-	projectClient := pbProject.NewProjectServiceClient(getGRPCConn(os.Getenv("PROJECT_SERVICE_ADDR")))
-	taskClient := pbTask.NewTaskServiceClient(getGRPCConn(os.Getenv("TASK_SERVICE_ADDR")))
-	userClient := pbUser.NewUserServiceClient(getGRPCConn(os.Getenv("USER_SERVICE_ADDR")))
+	projectClient := pbProject.NewProjectServiceClient(getGRPCConn(
+		os.Getenv("PROJECT_SERVICE_ADDR"),
+		interceptor.XTraceID,
+		interceptor.XUserID,
+	))
+	taskClient := pbTask.NewTaskServiceClient(getGRPCConn(
+		os.Getenv("TASK_SERVICE_ADDR"),
+		interceptor.XTraceID,
+		interceptor.XUserID,
+	))
+	userClient := pbUser.NewUserServiceClient(getGRPCConn(
+		os.Getenv("USER_SERVICE_ADDR"),
+		interceptor.XTraceID,
+		interceptor.XUserID,
+	))
 	sessionStore := session.NewStoreOnMemory()
 	frontSrv := &handler.FrontServer{
 		ProjectClient: projectClient,
@@ -68,8 +82,10 @@ func main() {
 	}
 }
 
-func getGRPCConn(target string) *grpc.ClientConn {
-	conn, err := grpc.Dial(target, grpc.WithInsecure())
+func getGRPCConn(target string, interceptors ...grpc.UnaryClientInterceptor) *grpc.ClientConn {
+	// インタセプタを使ってRPC共通の処理の追加
+	chain := grpc_middleware.ChainUnaryClient(interceptors...)
+	conn, err := grpc.Dial(target, grpc.WithInsecure(), grpc.WithUnaryInterceptor(chain))
 	if err != nil {
 		log.Fatalf("failed to dial: %s", err)
 	}
