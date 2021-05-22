@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"strings"
 	"todo/front/session"
+	"todo/front/support"
 	"todo/front/template"
 	pbProject "todo/proto/project"
 	pbTask "todo/proto/task"
 	pbUser "todo/proto/user"
-	"todo/support"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/gorilla/mux"
@@ -28,7 +28,7 @@ func (s *FrontServer) ViewSignup(w http.ResponseWriter, r *http.Request) {
 	template.Render(w, "signup.html", nil)
 }
 
-func (s *FrontServer) SignUp(w http.ResponseWriter, r *http.Request) {
+func (s *FrontServer) Signup(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	resp, err := s.UserClient.CreateUser(r.Context(), &pbUser.CreateUserRequest{
 		Email:    r.Form.Get("email"),
