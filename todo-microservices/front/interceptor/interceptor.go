@@ -27,6 +27,6 @@ func XUserID(ctx context.Context,
 	invoker grpc.UnaryInvoker,
 	opts ...grpc.CallOption) error {
 	user := support.GetUserFromContext(ctx)
-	ctx = md.AddUserIDToContext(ctx, user.Id)
+	ctx = md.AddUserIDToContext(ctx, user.GetId())
 	return invoker(ctx, method, req, reply, cc, opts...)
 }

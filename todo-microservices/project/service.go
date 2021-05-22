@@ -29,7 +29,7 @@ func (s *projectService) CreateProject(
 
 	userID := md.GetUserIDFromContext(ctx)
 	project := projectDomain.NewProject(req.GetName(), userID)
-	projectDomain.NewProjectRepository(s.db).Save(project)
+	projectDomain.NewProjectRepository(s.db).Create(project)
 
 	return &pbProject.CreateProjectResponse{
 		Project: buildPbProject(project),

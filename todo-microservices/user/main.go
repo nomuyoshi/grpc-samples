@@ -29,6 +29,7 @@ func main() {
 
 	srv := grpc.NewServer(grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 		interceptor.XTraceID(),
+		interceptor.XUserID(),
 		interceptor.Logging(),
 	)))
 	pbUser.RegisterUserServiceServer(srv, &userService{

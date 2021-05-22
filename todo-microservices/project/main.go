@@ -22,6 +22,7 @@ func main() {
 	dbConn := db.ConnectDB()
 	srv := grpc.NewServer(grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 		interceptor.XTraceID(),
+		interceptor.XUserID(),
 		interceptor.Logging(),
 	)))
 	pbProject.RegisterProjectServiceServer(srv, &projectService{

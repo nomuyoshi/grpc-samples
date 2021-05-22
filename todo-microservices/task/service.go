@@ -34,7 +34,7 @@ func (s *TaskService) CreateTask(ctx context.Context, req *pbTask.CreateTaskRequ
 
 	userID := md.GetUserIDFromContext(ctx)
 	t := taskDomain.NewTask(name, userID, prResp.Project.Id)
-	taskDomain.NewTaskRepository(s.db).Save(t)
+	taskDomain.NewTaskRepository(s.db).Create(t)
 	return &pbTask.CreateTaskResponse{Task: buildPbTask(t)}, nil
 }
 

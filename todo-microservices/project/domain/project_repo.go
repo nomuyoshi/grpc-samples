@@ -14,6 +14,14 @@ func NewProjectRepository(db *gorm.DB) *ProjectRepository {
 	return &ProjectRepository{db: db}
 }
 
+func (repo *ProjectRepository) Create(project *Project) *Project {
+	if err := repo.db.Create(&project).Error; err != nil {
+		panic(err)
+	}
+
+	return project
+}
+
 func (repo *ProjectRepository) Save(project *Project) *Project {
 	if err := repo.db.Save(&project).Error; err != nil {
 		panic(err)

@@ -14,6 +14,14 @@ func NewTaskRepository(db *gorm.DB) *TaskRepository {
 	return &TaskRepository{db: db}
 }
 
+func (r *TaskRepository) Create(task *Task) *Task {
+	if err := r.db.Create(task).Error; err != nil {
+		panic(err)
+	}
+
+	return task
+}
+
 func (r *TaskRepository) Save(task *Task) *Task {
 	if err := r.db.Save(task).Error; err != nil {
 		panic(err)

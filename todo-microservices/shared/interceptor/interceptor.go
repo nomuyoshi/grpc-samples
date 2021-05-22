@@ -35,6 +35,7 @@ func XUserID() grpc.UnaryServerInterceptor {
 		handler grpc.UnaryHandler,
 	) (interface{}, error) {
 		userID, err := md.SafeGetUserIDFromContext(ctx)
+		log.Printf("shared/interceptor userID: %d\n", userID)
 		if err != nil {
 			return nil, status.Error(codes.InvalidArgument, err.Error())
 		}
