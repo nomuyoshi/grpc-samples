@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/golang/protobuf v1.5.0
+	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/rs/xid v1.3.0 // indirect
 	google.golang.org/grpc v1.37.1
