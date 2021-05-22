@@ -10,7 +10,9 @@ import (
 	"time"
 	pbProject "todo/proto/project"
 	db "todo/shared/db"
+	"todo/shared/interceptor"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"google.golang.org/grpc"
 )
 
@@ -18,8 +20,10 @@ const port = ":50051"
 
 func main() {
 	dbConn := db.ConnectDB()
-	// TODO: インターセプター
-	srv := grpc.NewServer()
+	srv := grpc.NewServer(grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+		interceptor.XTraceID(),
+		interceptor.Logging(),
+	)))
 	pbProject.RegisterProjectServiceServer(srv, &projectService{
 		db: dbConn,
 	})

@@ -11,6 +11,9 @@ import (
 	pbProject "todo/proto/project"
 	pbUser "todo/proto/user"
 	db "todo/shared/db"
+	"todo/shared/interceptor"
+
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 
 	"google.golang.org/grpc"
 )
@@ -24,7 +27,10 @@ func main() {
 		log.Fatalf("failed to dial to project: %s", err)
 	}
 
-	srv := grpc.NewServer()
+	srv := grpc.NewServer(grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+		interceptor.XTraceID(),
+		interceptor.Logging(),
+	)))
 	pbUser.RegisterUserServiceServer(srv, &userService{
 		db:            dbConn,
 		projectClient: pbProject.NewProjectServiceClient(projectConn),

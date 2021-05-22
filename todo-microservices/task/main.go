@@ -12,7 +12,9 @@ import (
 	pbProject "todo/proto/project"
 	pbTask "todo/proto/task"
 	db "todo/shared/db"
+	"todo/shared/interceptor"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"google.golang.org/grpc"
 )
 
@@ -26,7 +28,10 @@ func main() {
 
 	// TODO: インターセプター
 	dbConn := db.ConnectDB()
-	srv := grpc.NewServer()
+	srv := grpc.NewServer(grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+		interceptor.XTraceID(),
+		interceptor.Logging(),
+	)))
 	// service登録
 	pbTask.RegisterTaskServiceServer(srv, &TaskService{
 		db:            dbConn,

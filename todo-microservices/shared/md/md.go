@@ -13,7 +13,7 @@ const metadataKeyUserID string = "x-user-id"
 var ErrNotFoundUserID = errors.New("not found user id")
 
 func GetUserIDFromContext(ctx context.Context) uint64 {
-	userID, err := safeGetUserIDFromContext(ctx)
+	userID, err := SafeGetUserIDFromContext(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -21,7 +21,7 @@ func GetUserIDFromContext(ctx context.Context) uint64 {
 	return userID
 }
 
-func safeGetUserIDFromContext(ctx context.Context) (uint64, error) {
+func SafeGetUserIDFromContext(ctx context.Context) (uint64, error) {
 	var userID uint64
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
@@ -43,4 +43,22 @@ func safeGetUserIDFromContext(ctx context.Context) (uint64, error) {
 
 func AddUserIDToContext(ctx context.Context, userID uint64) context.Context {
 	return metadata.AppendToOutgoingContext(ctx, metadataKeyUserID, strconv.FormatUint(userID, 10))
+}
+
+const metadataKeyTraceID string = "x-trace-id"
+
+func GetTraceIDFromContext(ctx context.Context) string {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return ""
+	}
+	values := md.Get(metadataKeyTraceID)
+	if len(values) < 1 {
+		return ""
+	}
+	return values[0]
+}
+
+func AddTraceIDToContext(ctx context.Context, traceID string) context.Context {
+	return metadata.AppendToOutgoingContext(ctx, metadataKeyTraceID, traceID)
 }
